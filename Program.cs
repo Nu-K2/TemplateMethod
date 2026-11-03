@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace OrderProcessingDemo
@@ -56,7 +56,7 @@ namespace OrderProcessingDemo
             while (true)
             {
                 Console.Write("Введите сумму заказа: ");
-                if (!decimal.TryParse(Console.ReadLine(), out decimal amount) )
+                if (!decimal.TryParse(Console.ReadLine(), out decimal amount))
                 {
                     Console.WriteLine("Ошибка: Сумма заказа должна состоять из чисел.\n");
                     continue;
@@ -134,7 +134,10 @@ public class OrderManager
     public void ProcessOrder(OrderProcessor processor, decimal amount)
     {
         processor.ProcessOrder(amount);
-        _orders.Add($"Заказ на {amount} руб. [{processor.OrderType}]");
+        if (processor.OrderType == "Премиум")
+            _orders.Add($"Заказ на {amount} руб обработан со скидкой {processor.DiscPercentage * 100:F0}%. [{processor.OrderType}]");
+        if (processor.OrderType == "Обычный")
+            _orders.Add($"Заказ на {amount} руб. [{processor.OrderType}]");
     }
 
     public void ShowAllOrders()
@@ -181,7 +184,7 @@ public abstract class OrderProcessor
     protected virtual decimal CalculateDiscount(decimal amount)
     {
         decimal discount = amount * DiscPercentage;
-        Console.WriteLine($"  [{OrderType}] Скидка {DiscPercentage}: {discount} руб.");
+        Console.WriteLine($"  [{OrderType}] Скидка {DiscPercentage * 100:F0}%: {discount} руб.");
         return discount;
     }
     protected virtual void ProcessPayment(decimal amount)
